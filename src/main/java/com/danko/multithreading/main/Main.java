@@ -7,14 +7,13 @@ import com.danko.multithreading.entity.BusStop;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        BusStop busStop1 = new BusStop("BusStop1", 2, 10);
-        BusStop busStop2 = new BusStop("BusStop2", 2, 5);
-        BusStop busStop3 = new BusStop("BusStop3", 1, 15);
-        BusStop busStop4 = new BusStop("BusStop4", 3, 12);
+        BusStop busStop1 = new BusStop("BusStop1", 2, 6);
+        BusStop busStop2 = new BusStop("BusStop2", 1, 10);
+        BusStop busStop3 = new BusStop("BusStop3", 3, 5);
+        BusStop busStop4 = new BusStop("BusStop4", 1, 1);
 
         List<BusStop> busStops = new ArrayList<BusStop>(Arrays.asList(busStop1, busStop2, busStop3, busStop4));
         BusRoute busRoute1 = BusRoute.getInstance();
@@ -22,16 +21,16 @@ public class Main {
         busRoute1.setBusRouteNumber(100);
 
         Bus bus1 = new Bus(100);
+        Bus bus2 = new Bus(100);
+        Bus bus3 = new Bus(100);
+        Bus bus4 = new Bus(100);
         Thread bus1Thread = new Thread(bus1);
+        Thread bus2Thread = new Thread(bus2);
+        Thread bus3Thread = new Thread(bus3);
+        Thread bus4Thread = new Thread(bus4);
         bus1Thread.start();
-
-//        bus1Thread.interrupt();
-
-        for (int i = 0; i < 15; i++) {
-            TimeUnit.SECONDS.sleep(1);
-            System.out.println("main");
-        }
-
-
+        bus2Thread.start();
+        bus3Thread.start();
+        bus4Thread.start();
     }
 }

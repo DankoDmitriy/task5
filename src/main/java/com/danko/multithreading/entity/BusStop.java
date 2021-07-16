@@ -2,11 +2,19 @@ package com.danko.multithreading.entity;
 
 import com.danko.multithreading.util.BusStopIdGenerator;
 
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class BusStop {
     private long busStopId;
     private String name;
     private int busesMax;
     private long timeStop;
+    private Integer busesCount = 0;
+    private Semaphore semaphore;
+    private Lock busStopLock = new ReentrantLock(true);
 
     public BusStop() {
         busStopId = BusStopIdGenerator.generatorId();
@@ -17,6 +25,64 @@ public class BusStop {
         this.name = name;
         this.busesMax = busesMax;
         this.timeStop = timeStop;
+        semaphore = new Semaphore(busesMax, true);
+    }
+
+    public void busParking(Bus bus) {
+//        busStopLock.lock();
+//        if (busesCount <= busesMax) {
+//            System.out.println(String.format("Bus id = %d stopped. He`s route is = %d. Bus stop name = %s",
+//                    bus.getBusId(), bus.getBusNumber(), name));
+//            busesCount++;
+//        }
+//        busStopLock.unlock();
+//        try {
+////            System.out.println("Passengers are transferring...");
+//            System.out.printf("BusStopName = %s. BusMax = %d. Now here buses= %d%n", name, busesMax, busesCount);
+//            TimeUnit.SECONDS.sleep(timeStop);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        busStopLock.lock();
+//        busesCount--;
+//        busStopLock.unlock();
+////        System.out.println("Bus drive to next bus stop...");
+
+
+//        todo - WORKing
+        try {
+            semaphore.acquire();
+            System.out.println("QueueLength = " + semaphore.getQueueLength() + " Name = " + name);
+            synchronized (busesCount) {
+                if (busesCount <= busesMax) {
+                    System.out.println(String.format("Bus id = %d stopped. He`s route is = %d. Bus stop name = %s",
+                            bus.getBusId(), bus.getBusNumber(), name));
+                    busesCount++;
+                }
+            }
+//            System.out.println("Passengers are transferring...");
+            System.out.printf("BusStopName=%s. BusMax=%d. Now here buses=%d%n", name, busesMax, busesCount);
+            TimeUnit.SECONDS.sleep(timeStop);
+            synchronized (busesCount) {
+                busesCount--;
+            }
+            semaphore.release();
+//            System.out.println("Bus drive to next bus stop...");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int getBusesCount() {
+        return busesCount;
+    }
+
+    public void setBusesCount(int busesCount) {
+        this.busesCount = busesCount;
+    }
+
+    public Semaphore getSemaphore() {
+        return semaphore;
     }
 
     public long getBusStopId() {
