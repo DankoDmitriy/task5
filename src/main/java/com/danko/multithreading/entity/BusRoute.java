@@ -45,8 +45,6 @@ public class BusRoute {
         this.busStops = busStops;
     }
 
-    //todo control
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
